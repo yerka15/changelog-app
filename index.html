@@ -202,11 +202,10 @@
     }
     .pill button:hover { color: #ef4444; background: none; }
 
-    /* 📱 MOBILE OPTIMIZATION (Transforms Table into Responsive Cards) */
+    /* 📱 MOBILE OPTIMIZATION */
     @media (max-width: 768px) {
       .container { padding: 0; }
       
-      /* Hide standard table headers on mobile */
       table, thead, tbody, th, td, tr {
         display: block;
       }
@@ -226,7 +225,6 @@
         border: none;
       }
 
-      /* Mobile Card Layout Formatting */
       .mobile-header {
         display: flex;
         justify-content: space-between;
@@ -289,7 +287,7 @@
   </div>
 
   <!-- Form -->
-  <div class="card">
+  <div class="card" id="formCard">
     <h3 id="formTitle">Add New Entry</h3>
     <form id="changelogForm">
       <input type="hidden" id="editDocId" value="">
@@ -375,11 +373,11 @@
   const changelogRef = collection(db, "changelogs");
   const optionsDocRef = doc(db, "settings", "dropdownOptions");
 
-  // 🔴 FIX 1: Simplified query to prevent silent Firebase Index errors
   const q = query(changelogRef, orderBy("timestamp", "desc"));
 
   // DOM Elements
   const form = document.getElementById('changelogForm');
+  const formCard = document.getElementById('formCard');
   const formTitle = document.getElementById('formTitle');
   const editDocIdInput = document.getElementById('editDocId');
   const submitBtn = document.getElementById('submitBtn');
@@ -503,7 +501,7 @@
       };
 
       if (isMobile) {
-        // 📱 Render as Mobile Card
+        // Render as Mobile Card
         tr.innerHTML = `
           <td>
             <div class="mobile-header">
@@ -519,7 +517,7 @@
           </td>
         `;
       } else {
-        // 🖥️ Render as Desktop Table Row
+        // Render as Desktop Table Row
         tr.innerHTML = `
           <td style="white-space: nowrap; font-size: 0.8rem; color:#64748b;">${entry.date || ''}</td>
           <td><strong>${entry.version || ''}</strong></td>
@@ -553,7 +551,9 @@
           formTitle.innerText = "Edit Entry";
           submitBtn.innerText = "Update Entry";
           cancelEditBtn.style.display = "inline-block";
-          window.scrollTo({ top: 0, behavior: 'smooth' });
+          
+          // 🎯 Smooth Scroll directly to the form card on edit
+          formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
     });
@@ -568,9 +568,8 @@
       });
     });
   }, (error) => {
-    // 🔴 Diagnostic Error Alert
     console.error("Firebase Sync Error:", error);
-    alert("Firebase Sync Error: " + error.message + "\nPlease check your Firebase Security Rules!");
+    alert("Firebase Sync Error: " + error.message);
   });
 
   // Cancel Edit
@@ -599,10 +598,8 @@
 
     try {
       if (editId) {
-        // Update existing entry
         await updateDoc(doc(db, "changelogs", editId), entryData);
       } else {
-        // Create new entry
         entryData.date = new Date().toISOString().split('T')[0];
         entryData.timestamp = Date.now();
         await addDoc(changelogRef, entryData);
@@ -611,7 +608,8 @@
       resetForm();
       const status = document.getElementById('status');
       status.style.display = 'block';
-      setTimeout(() => status.style.display = 'none', 3000);
+      // ⏱️ Shortened notification timeout to 1.5 seconds
+      setTimeout(() => status.style.display = 'none', 1500);
     } catch (error) {
       console.error("Error saving document:", error);
       alert("Error saving data: " + error.message);
