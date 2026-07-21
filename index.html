@@ -23,8 +23,9 @@
       line-height: 1.5;
     }
 
+    /* 📏 Increased overall width from 1000px to 1200px */
     .container {
-      max-width: 1000px;
+      max-width: 1200px;
       margin: 0 auto;
     }
 
@@ -84,6 +85,7 @@
       cursor: pointer;
       font-weight: 500;
       font-size: 0.9rem;
+      white-space: nowrap;
     }
 
     button:hover { background: var(--primary-hover); }
@@ -94,15 +96,17 @@
     .btn-action-group {
       display: flex;
       gap: 0.5rem;
+      white-space: nowrap;
     }
 
     .btn-edit {
       background: #eff6ff;
       color: #2563eb;
       border: 1px solid #bfdbfe;
-      padding: 0.4rem 0.75rem;
+      padding: 0.4rem 0.8rem;
       font-size: 0.8rem;
       border-radius: 4px;
+      white-space: nowrap;
     }
     .btn-edit:hover { background: #2563eb; color: #ffffff; }
 
@@ -110,13 +114,14 @@
       background: #fef2f2;
       color: #dc2626;
       border: 1px solid #fecaca;
-      padding: 0.4rem 0.75rem;
+      padding: 0.4rem 0.8rem;
       font-size: 0.8rem;
       border-radius: 4px;
+      white-space: nowrap;
     }
     .btn-delete:hover { background: #dc2626; color: #ffffff; }
 
-    /* Desktop Table Styles */
+    /* Desktop Table Styles with Optimized Column Widths */
     table {
       width: 100%;
       border-collapse: collapse;
@@ -125,27 +130,36 @@
 
     th, td {
       text-align: left;
-      padding: 0.75rem 0.5rem;
+      padding: 0.75rem 0.6rem;
       border-bottom: 1px solid var(--border);
       vertical-align: top;
-      word-break: break-word;
     }
+
+    /* Fixed Column Allocations so text never breaks awkward */
+    th:nth-child(1), td:nth-child(1) { width: 110px; white-space: nowrap; } /* Date */
+    th:nth-child(2), td:nth-child(2) { width: 120px; word-break: break-word; } /* Version */
+    th:nth-child(3), td:nth-child(3) { width: 150px; white-space: nowrap; } /* Category */
+    th:nth-child(4), td:nth-child(4) { width: auto; word-break: break-word; }  /* Description (Takes remaining space) */
+    th:nth-child(5), td:nth-child(5) { width: 120px; white-space: nowrap; } /* Developer */
+    th:nth-child(6), td:nth-child(6) { width: 140px; white-space: nowrap; } /* Actions */
 
     th {
       background-color: #f1f5f9;
       font-size: 0.75rem;
       color: #475569;
       text-transform: uppercase;
+      white-space: nowrap;
     }
 
-    /* Badges */
+    /* Badges - Prevent word splitting */
     .badge {
       display: inline-block;
-      padding: 0.2rem 0.5rem;
+      padding: 0.25rem 0.6rem;
       border-radius: 9999px;
       font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .badge-feature { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
@@ -208,6 +222,7 @@
       
       table, thead, tbody, th, td, tr {
         display: block;
+        width: 100% !important;
       }
       thead { display: none; }
 
@@ -218,6 +233,7 @@
         margin-bottom: 1rem;
         padding: 1rem;
         box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+        box-sizing: border-box;
       }
 
       td {
@@ -519,7 +535,7 @@
       } else {
         // Render as Desktop Table Row
         tr.innerHTML = `
-          <td style="white-space: nowrap; font-size: 0.8rem; color:#64748b;">${entry.date || ''}</td>
+          <td>${entry.date || ''}</td>
           <td><strong>${entry.version || ''}</strong></td>
           <td><span class="badge badge-${entry.type}">${categoryLabels[entry.type] || entry.type}</span></td>
           <td>${formatBulletPoints(entry.description)}</td>
@@ -552,7 +568,6 @@
           submitBtn.innerText = "Update Entry";
           cancelEditBtn.style.display = "inline-block";
           
-          // 🎯 Smooth Scroll directly to the form card on edit
           formCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       });
@@ -608,7 +623,6 @@
       resetForm();
       const status = document.getElementById('status');
       status.style.display = 'block';
-      // ⏱️ Shortened notification timeout to 1.5 seconds
       setTimeout(() => status.style.display = 'none', 1500);
     } catch (error) {
       console.error("Error saving document:", error);
