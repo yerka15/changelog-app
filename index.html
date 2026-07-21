@@ -19,7 +19,7 @@
       background: var(--bg);
       color: var(--text);
       margin: 0;
-      padding: 2rem;
+      padding: 1.5rem;
       line-height: 1.5;
     }
 
@@ -28,14 +28,14 @@
       margin: 0 auto;
     }
 
-    h1 { margin-bottom: 0.25rem; }
-    p.subtitle { color: #64748b; margin-bottom: 1.5rem; }
+    h1 { margin-bottom: 0.25rem; font-size: 1.75rem; }
+    p.subtitle { color: #64748b; margin-bottom: 1.5rem; font-size: 0.95rem; }
 
     .card {
       background: var(--card-bg);
       border: 1px solid var(--border);
       border-radius: 8px;
-      padding: 1.5rem;
+      padding: 1.25rem;
       margin-bottom: 1.5rem;
       box-shadow: 0 1px 3px rgba(0,0,0,0.05);
     }
@@ -43,21 +43,21 @@
     /* Form Styles */
     .form-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1rem;
       margin-bottom: 1rem;
     }
 
     label {
       display: block;
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       font-weight: 600;
       margin-bottom: 0.25rem;
     }
 
     input, select, textarea {
       width: 100%;
-      padding: 0.55rem;
+      padding: 0.6rem;
       border: 1px solid var(--border);
       border-radius: 6px;
       box-sizing: border-box;
@@ -65,16 +65,17 @@
       font-size: 0.9rem;
     }
 
-    textarea { resize: vertical; height: 90px; }
+    textarea { resize: vertical; height: 110px; }
 
     .actions {
       display: flex;
       gap: 0.75rem;
       justify-content: flex-end;
       align-items: center;
+      flex-wrap: wrap;
     }
 
-    /* General Button Styles */
+    /* Buttons */
     button {
       background: var(--primary);
       color: white;
@@ -91,67 +92,79 @@
     button.secondary { background: #64748b; }
     button.secondary:hover { background: #475569; }
 
-    /* Action Buttons inside Table */
+    /* Action Buttons in Table */
     .btn-action-group {
       display: flex;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
     .btn-edit {
       background: #eff6ff;
       color: #2563eb;
       border: 1px solid #bfdbfe;
-      padding: 0.35rem 0.75rem;
+      padding: 0.35rem 0.65rem;
       font-size: 0.8rem;
     }
-    .btn-edit:hover {
-      background: #2563eb;
-      color: #ffffff;
-    }
+    .btn-edit:hover { background: #2563eb; color: #ffffff; }
 
     .btn-delete {
       background: #fef2f2;
       color: #dc2626;
       border: 1px solid #fecaca;
-      padding: 0.35rem 0.75rem;
+      padding: 0.35rem 0.65rem;
       font-size: 0.8rem;
     }
-    .btn-delete:hover {
-      background: #dc2626;
-      color: #ffffff;
+    .btn-delete:hover { background: #dc2626; color: #ffffff; }
+
+    /* Table Responsiveness & Layout Fixes */
+    .table-responsive {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
 
-    /* Table Styles */
     table {
       width: 100%;
       border-collapse: collapse;
-      margin-top: 1rem;
+      margin-top: 0.5rem;
+      table-layout: fixed; /* Ensures strict column wrapping */
+      min-width: 650px;    /* Prevents severe squishing on mobile */
     }
 
     th, td {
       text-align: left;
-      padding: 0.75rem 1rem;
+      padding: 0.75rem 0.6rem;
       border-bottom: 1px solid var(--border);
       vertical-align: top;
+      word-wrap: break-word;
+      overflow-wrap: anywhere; /* Fixes text overflowing card */
+      word-break: break-word;
     }
+
+    /* Fixed Column Widths */
+    th:nth-child(1), td:nth-child(1) { width: 95px; }  /* Date */
+    th:nth-child(2), td:nth-child(2) { width: 85px; }  /* Version */
+    th:nth-child(3), td:nth-child(3) { width: 110px; } /* Category */
+    th:nth-child(4), td:nth-child(4) { width: auto; }  /* Description */
+    th:nth-child(5), td:nth-child(5) { width: 90px; }  /* Developer */
+    th:nth-child(6), td:nth-child(6) { width: 115px; } /* Actions */
 
     th {
       background-color: #f1f5f9;
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       color: #475569;
       text-transform: uppercase;
       letter-spacing: 0.05em;
     }
 
-    /* Badges with explicit color coding */
+    /* Badges */
     .badge {
       display: inline-block;
-      padding: 0.25rem 0.6rem;
+      padding: 0.2rem 0.5rem;
       border-radius: 9999px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 0.025em;
     }
 
     .badge-feature { background: #dcfce7; color: #15803d; border: 1px solid #bbf7d0; }
@@ -159,25 +172,23 @@
     .badge-change { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
     .badge-security { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
 
-    /* Bullet point list styling inside table */
     .changelog-notes {
       margin: 0;
-      padding-left: 1.2rem;
+      padding-left: 1.1rem;
     }
     .changelog-notes li {
-      margin-bottom: 0.25rem;
+      margin-bottom: 0.2rem;
     }
 
-    /* Status indicator */
     #status {
-      font-size: 0.875rem;
+      font-size: 0.85rem;
       color: #16a34a;
       font-weight: 600;
       display: none;
       margin-right: auto;
     }
 
-    /* Management Section (Collapsible style) */
+    /* Management Section */
     details summary {
       cursor: pointer;
       font-weight: 600;
@@ -186,20 +197,20 @@
     }
     .manage-grid {
       display: grid;
-      grid-template-columns: 1fr 1fr;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
       gap: 1.5rem;
       margin-top: 1rem;
     }
     .pill-list {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 0.4rem;
       margin-top: 0.5rem;
     }
     .pill {
       background: #f1f5f9;
       border: 1px solid var(--border);
-      padding: 0.2rem 0.6rem;
+      padding: 0.2rem 0.5rem;
       border-radius: 4px;
       font-size: 0.8rem;
       display: flex;
@@ -215,6 +226,15 @@
       font-size: 0.9rem;
     }
     .pill button:hover { color: #ef4444; background: none; }
+
+    /* Mobile Adaptations */
+    @media (max-width: 640px) {
+      body { padding: 0.75rem; }
+      .card { padding: 1rem; }
+      .actions { width: 100%; justify-content: stretch; }
+      .actions button { width: 100%; }
+      #status { margin-right: 0; width: 100%; text-align: center; margin-bottom: 0.5rem; }
+    }
   </style>
 </head>
 <body>
@@ -223,7 +243,7 @@
   <h1>🚀 Developer Changelog</h1>
   <p class="subtitle">All changes are synchronized in real-time across the team.</p>
 
-  <!-- Dropdown Management Panel -->
+  <!-- Dropdown Management -->
   <div class="card">
     <details>
       <summary>⚙️ Manage Dropdown Options (Versions & Developers)</summary>
@@ -277,8 +297,8 @@
         </div>
       </div>
       <div style="margin-bottom: 1rem;">
-        <label for="description">Change Notes (Enter bullet points line by line)</label>
-        <textarea id="description" placeholder="- Implemented user login&#10;- Fixed navbar alignment on mobile" required></textarea>
+        <label for="description">Change Notes</label>
+        <textarea id="description" placeholder="• Type your bullet point here..." required></textarea>
       </div>
       <div class="actions">
         <span id="status">✓ Saved successfully</span>
@@ -288,31 +308,33 @@
     </form>
   </div>
 
-  <!-- Change History Table -->
+  <!-- History Table -->
   <div class="card">
     <h3>Change History</h3>
-    <table>
-      <thead>
-        <tr>
-          <th>Date</th>
-          <th>Version</th>
-          <th>Category</th>
-          <th>Description</th>
-          <th>Developer</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody id="changelogTable">
-        <!-- Live content from Firebase -->
-      </tbody>
-    </table>
+    <div class="table-responsive">
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Version</th>
+            <th>Category</th>
+            <th>Description</th>
+            <th>Developer</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="changelogTable">
+          <!-- Live Firebase Data -->
+        </tbody>
+      </table>
+    </div>
   </div>
 </div>
 
 <!-- Firebase Modules -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, orderBy, updateDoc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, collection, addDoc, onSnapshot, deleteDoc, doc, query, orderBy, updateDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   // ==========================================
   // 🔴 PASTE YOUR FIREBASE CONFIG HERE 🔴
@@ -334,7 +356,7 @@
   const optionsDocRef = doc(db, "settings", "dropdownOptions");
   const q = query(changelogRef, orderBy("date", "desc"), orderBy("timestamp", "desc"));
 
-  // Form elements
+  // Form Elements
   const form = document.getElementById('changelogForm');
   const formTitle = document.getElementById('formTitle');
   const editDocIdInput = document.getElementById('editDocId');
@@ -347,43 +369,60 @@
   const descriptionInput = document.getElementById('description');
 
   let listOptions = { versions: ["v1.0.0", "v1.1.0"], developers: ["Alex", "Maria"] };
+  let entriesStore = new Map(); // Store data locally to fix edit bug
 
-  // 1. Synchronize Dropdown Lists (Versions & Developers)
+  // 1. Automatic Bullet Point Logic for Textarea
+  descriptionInput.addEventListener('focus', () => {
+    if (!descriptionInput.value.trim()) {
+      descriptionInput.value = '• ';
+    }
+  });
+
+  descriptionInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      const start = descriptionInput.selectionStart;
+      const end = descriptionInput.selectionEnd;
+      const val = descriptionInput.value;
+      const bullet = '\n• ';
+      
+      descriptionInput.value = val.substring(0, start) + bullet + val.substring(end);
+      descriptionInput.selectionStart = descriptionInput.selectionEnd = start + bullet.length;
+    }
+  });
+
+  // 2. Manage Dropdowns
   onSnapshot(optionsDocRef, (docSnap) => {
     if (docSnap.exists()) {
       listOptions = docSnap.data();
     } else {
-      // Set initial defaults if document doesn't exist
       setDoc(optionsDocRef, listOptions);
     }
     renderDropdowns();
   });
 
   function renderDropdowns() {
-    // Render Select options
-    const currentVersionVal = versionSelect.value;
-    const currentAuthorVal = authorSelect.value;
+    const curVer = versionSelect.value;
+    const curDev = authorSelect.value;
 
     versionSelect.innerHTML = '<option value="">Select version...</option>' + 
-      listOptions.versions.map(v => `<option value="${v}">${v}</option>`).join('');
+      (listOptions.versions || []).map(v => `<option value="${v}">${v}</option>`).join('');
     
     authorSelect.innerHTML = '<option value="">Select developer...</option>' + 
-      listOptions.developers.map(d => `<option value="${d}">${d}</option>`).join('');
+      (listOptions.developers || []).map(d => `<option value="${d}">${d}</option>`).join('');
 
-    versionSelect.value = currentVersionVal;
-    authorSelect.value = currentAuthorVal;
+    versionSelect.value = curVer;
+    authorSelect.value = curDev;
 
-    // Render Management Pills
-    document.getElementById('versionPills').innerHTML = listOptions.versions.map((v, i) => 
-      `<span class="pill">${v} <button onclick="removeOption('versions', ${i})">&times;</button></span>`
+    document.getElementById('versionPills').innerHTML = (listOptions.versions || []).map((v, i) => 
+      `<span class="pill">${v} <button type="button" onclick="removeOption('versions', ${i})">&times;</button></span>`
     ).join('');
 
-    document.getElementById('devPills').innerHTML = listOptions.developers.map((d, i) => 
-      `<span class="pill">${d} <button onclick="removeOption('developers', ${i})">&times;</button></span>`
+    document.getElementById('devPills').innerHTML = (listOptions.developers || []).map((d, i) => 
+      `<span class="pill">${d} <button type="button" onclick="removeOption('developers', ${i})">&times;</button></span>`
     ).join('');
   }
 
-  // Add Option Functions
   document.getElementById('addVersionBtn').addEventListener('click', async () => {
     const val = document.getElementById('newVersionInput').value.trim();
     if (val && !listOptions.versions.includes(val)) {
@@ -407,7 +446,7 @@
     await setDoc(optionsDocRef, listOptions);
   };
 
-  // 2. Helper to Format Bullet Points for HTML Table
+  // 3. Render Bullet Points in Table
   function formatBulletPoints(text) {
     if (!text) return '';
     const lines = text.split('\n').map(l => l.trim()).filter(l => l.length > 0);
@@ -421,14 +460,16 @@
     return `<ul class="changelog-notes">${formattedItems}</ul>`;
   }
 
-  // 3. Render Live History Table
+  // 4. Synchronize Table & Edit/Delete
   onSnapshot(q, (snapshot) => {
     const tableBody = document.getElementById('changelogTable');
     tableBody.innerHTML = '';
+    entriesStore.clear();
 
     snapshot.forEach((docSnap) => {
       const entry = docSnap.data();
       const id = docSnap.id;
+      entriesStore.set(id, entry);
 
       const tr = document.createElement('tr');
       const categoryLabels = {
@@ -439,52 +480,54 @@
       };
 
       tr.innerHTML = `
-        <td style="white-space: nowrap; font-size: 0.85rem; color:#64748b;">${entry.date}</td>
-        <td><strong>${entry.version}</strong></td>
+        <td style="white-space: nowrap; font-size: 0.8rem; color:#64748b;">${entry.date || ''}</td>
+        <td><strong>${entry.version || ''}</strong></td>
         <td><span class="badge badge-${entry.type}">${categoryLabels[entry.type] || entry.type}</span></td>
         <td>${formatBulletPoints(entry.description)}</td>
-        <td>${entry.author}</td>
+        <td>${entry.author || ''}</td>
         <td>
           <div class="btn-action-group">
-            <button class="btn-edit" data-id="${id}" data-entry='${JSON.stringify(entry).replace(/'/g, "&apos;")}'>Edit</button>
-            <button class="btn-delete" data-id="${id}">Delete</button>
+            <button type="button" class="btn-edit" data-id="${id}">Edit</button>
+            <button type="button" class="btn-delete" data-id="${id}">Delete</button>
           </div>
         </td>
       `;
       tableBody.appendChild(tr);
     });
 
-    // Attach Event Listeners to Edit Buttons
+    // Attach Edit Handlers Safely
     document.querySelectorAll('.btn-edit').forEach(btn => {
       btn.addEventListener('click', (e) => {
-        const id = e.target.getAttribute('data-id');
-        const entry = JSON.parse(e.target.getAttribute('data-entry'));
+        const id = e.currentTarget.getAttribute('data-id');
+        const entry = entriesStore.get(id);
 
-        editDocIdInput.value = id;
-        versionSelect.value = entry.version;
-        categorySelect.value = entry.type;
-        authorSelect.value = entry.author;
-        descriptionInput.value = entry.description;
+        if (entry) {
+          editDocIdInput.value = id;
+          versionSelect.value = entry.version || '';
+          categorySelect.value = entry.type || 'feature';
+          authorSelect.value = entry.author || '';
+          descriptionInput.value = entry.description || '';
 
-        formTitle.innerText = "Edit Entry";
-        submitBtn.innerText = "Update Entry";
-        cancelEditBtn.style.display = "inline-block";
-        window.scrollTo({ top: 0, behavior: 'smooth' });
+          formTitle.innerText = "Edit Entry";
+          submitBtn.innerText = "Update Entry";
+          cancelEditBtn.style.display = "inline-block";
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
       });
     });
 
-    // Attach Event Listeners to Delete Buttons
+    // Attach Delete Handlers
     document.querySelectorAll('.btn-delete').forEach(btn => {
       btn.addEventListener('click', async (e) => {
         if (confirm('Are you sure you want to delete this entry?')) {
-          const id = e.target.getAttribute('data-id');
+          const id = e.currentTarget.getAttribute('data-id');
           await deleteDoc(doc(db, "changelogs", id));
         }
       });
     });
   });
 
-  // Cancel Edit Mode
+  // Cancel Edit
   cancelEditBtn.addEventListener('click', resetForm);
 
   function resetForm() {
@@ -495,7 +538,7 @@
     cancelEditBtn.style.display = "none";
   }
 
-  // 4. Handle Form Submit (Add or Update)
+  // 5. Submit Form (Save or Update)
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
     submitBtn.disabled = true;
@@ -505,16 +548,16 @@
       version: versionSelect.value,
       type: categorySelect.value,
       author: authorSelect.value,
-      description: descriptionInput.value,
-      date: new Date().toISOString().split('T')[0]
+      description: descriptionInput.value
     };
 
     try {
       if (editId) {
-        // Update existing document
+        // Update existing entry
         await updateDoc(doc(db, "changelogs", editId), entryData);
       } else {
-        // Add new document
+        // Create new entry
+        entryData.date = new Date().toISOString().split('T')[0];
         entryData.timestamp = Date.now();
         await addDoc(changelogRef, entryData);
       }
