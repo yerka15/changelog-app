@@ -68,7 +68,6 @@
       font-size: 0.9rem;
     }
 
-    /* 🎯 Fix: Uniform and graceful word wrapping in Textarea */
     textarea {
       resize: vertical;
       height: 110px;
@@ -168,6 +167,7 @@
     .badge-bugfix { background: #fee2e2; color: #b91c1c; border: 1px solid #fecaca; }
     .badge-change { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
     .badge-security { background: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+    .badge-default { background: #f1f5f9; color: #475569; border: 1px solid #cbd5e1; }
 
     .changelog-notes {
       margin: 0;
@@ -197,7 +197,7 @@
     }
     .manage-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
       gap: 1rem;
       margin-top: 1rem;
     }
@@ -302,7 +302,7 @@
   <!-- Options Management -->
   <div class="card">
     <details>
-      <summary>⚙️ Manage Dropdown Options (Versions & Developers)</summary>
+      <summary>⚙️ Manage Dropdown Options (Versions, Categories & Developers)</summary>
       <div class="manage-grid">
         <div>
           <label>Add New Version</label>
@@ -311,6 +311,14 @@
             <button type="button" id="addVersionBtn">Add</button>
           </div>
           <div class="pill-list" id="versionPills"></div>
+        </div>
+        <div>
+          <label>Add New Category</label>
+          <div style="display:flex; gap:0.5rem;">
+            <input type="text" id="newCategoryInput" placeholder="e.g. Refactor">
+            <button type="button" id="addCategoryBtn">Add</button>
+          </div>
+          <div class="pill-list" id="categoryPills"></div>
         </div>
         <div>
           <label>Add New Developer</label>
@@ -339,10 +347,7 @@
         <div>
           <label for="categorySelect">Category</label>
           <select id="categorySelect" required>
-            <option value="feature">Feature (New)</option>
-            <option value="bugfix">Bug Fix (Resolved)</option>
-            <option value="change">Improvement / Change</option>
-            <option value="security">Security</option>
+            <option value="">Select category...</option>
           </select>
         </div>
         <div>
@@ -426,17 +431,20 @@
   const categorySelect = document.getElementById('categorySelect');
   const descriptionInput = document.getElementById('description');
 
-  let listOptions = { versions: ["v1.0.0", "v1.1.0"], developers: ["Alex", "Maria"] };
+  let listOptions = { 
+    versions: ["v1.0.0", "v1.1.0"], 
+    categories: ["Feature (New)", "Bug Fix (Resolved)", "Improvement / Change", "Security"],
+    developers: ["Alex", "Maria"] 
+  };
   let entriesStore = new Map();
 
-  // 🎯 Auto Bullet Point & Self-Healing Logic
+  // Bullet Point Logic
   descriptionInput.addEventListener('focus', () => {
     if (!descriptionInput.value.trim()) {
       descriptionInput.value = '• ';
     }
   });
 
-  // Automatically recovers the initial bullet if user deletes it
   descriptionInput.addEventListener('input', () => {
     if (!descriptionInput.value.startsWith('• ')) {
       const cleanText = descriptionInput.value.replace(/^[•\s]*/, '');
@@ -461,6 +469,10 @@
   onSnapshot(optionsDocRef, (docSnap) => {
     if (docSnap.exists()) {
       listOptions = docSnap.data();
+      if (!listOptions.categories) {
+        listOptions.categories = ["Feature (New)", "Bug Fix (Resolved)", "Improvement / Change", "Security"];
+        setDoc(optionsDocRef, listOptions);
+      }
     } else {
       setDoc(optionsDocRef, listOptions);
     }
@@ -469,19 +481,28 @@
 
   function renderDropdowns() {
     const curVer = versionSelect.value;
+    const curCat = categorySelect.value;
     const curDev = authorSelect.value;
 
     versionSelect.innerHTML = '<option value="">Select version...</option>' + 
       (listOptions.versions || []).map(v => `<option value="${v}">${v}</option>`).join('');
+
+    categorySelect.innerHTML = '<option value="">Select category...</option>' + 
+      (listOptions.categories || []).map(c => `<option value="${c}">${c}</option>`).join('');
     
     authorSelect.innerHTML = '<option value="">Select developer...</option>' + 
       (listOptions.developers || []).map(d => `<option value="${d}">${d}</option>`).join('');
 
     versionSelect.value = curVer;
+    categorySelect.value = curCat;
     authorSelect.value = curDev;
 
     document.getElementById('versionPills').innerHTML = (listOptions.versions || []).map((v, i) => 
       `<span class="pill">${v} <button type="button" onclick="removeOption('versions', ${i})">&times;</button></span>`
+    ).join('');
+
+    document.getElementById('categoryPills').innerHTML = (listOptions.categories || []).map((c, i) => 
+      `<span class="pill">${c} <button type="button" onclick="removeOption('categories', ${i})">&times;</button></span>`
     ).join('');
 
     document.getElementById('devPills').innerHTML = (listOptions.developers || []).map((d, i) => 
@@ -498,6 +519,16 @@
     }
   });
 
+  document.getElementById('addCategoryBtn').addEventListener('click', async () => {
+    const val = document.getElementById('newCategoryInput').value.trim();
+    if (!listOptions.categories) listOptions.categories = [];
+    if (val && !listOptions.categories.includes(val)) {
+      listOptions.categories.push(val);
+      await setDoc(optionsDocRef, listOptions);
+      document.getElementById('newCategoryInput').value = '';
+    }
+  });
+
   document.getElementById('addDevBtn').addEventListener('click', async () => {
     const val = document.getElementById('newDevInput').value.trim();
     if (val && !listOptions.developers.includes(val)) {
@@ -511,6 +542,16 @@
     listOptions[type].splice(index, 1);
     await setDoc(optionsDocRef, listOptions);
   };
+
+  function getBadgeClass(catName) {
+    if (!catName) return 'badge-default';
+    const lower = catName.toLowerCase();
+    if (lower.includes('feature')) return 'badge-feature';
+    if (lower.includes('bug')) return 'badge-bugfix';
+    if (lower.includes('security')) return 'badge-security';
+    if (lower.includes('improvement') || lower.includes('change')) return 'badge-change';
+    return 'badge-default';
+  }
 
   function formatBulletPoints(text) {
     if (!text) return '';
@@ -539,12 +580,11 @@
       entriesStore.set(id, entry);
 
       const tr = document.createElement('tr');
-      const categoryLabels = {
-        feature: 'Feature',
-        bugfix: 'Bug Fix',
-        change: 'Improvement',
-        security: 'Security'
-      };
+      
+      // Backward compatibility mapping for old legacy types
+      const legacyLabels = { feature: 'Feature (New)', bugfix: 'Bug Fix (Resolved)', change: 'Improvement / Change', security: 'Security' };
+      const displayCategory = legacyLabels[entry.type] || entry.type || 'General';
+      const badgeClass = getBadgeClass(displayCategory);
 
       if (isMobile) {
         // Render as Mobile Card
@@ -552,7 +592,7 @@
           <td>
             <div class="mobile-header">
               <div><strong>${entry.version || ''}</strong></div>
-              <span class="badge badge-${entry.type}">${categoryLabels[entry.type] || entry.type}</span>
+              <span class="badge ${badgeClass}">${displayCategory}</span>
             </div>
             <div class="mobile-meta">By <strong>${entry.author || 'Unknown'}</strong> on ${entry.date || ''}</div>
             <div style="margin-top: 0.5rem;">${formatBulletPoints(entry.description)}</div>
@@ -567,7 +607,7 @@
         tr.innerHTML = `
           <td>${entry.date || ''}</td>
           <td><strong>${entry.version || ''}</strong></td>
-          <td><span class="badge badge-${entry.type}">${categoryLabels[entry.type] || entry.type}</span></td>
+          <td><span class="badge ${badgeClass}">${displayCategory}</span></td>
           <td>${formatBulletPoints(entry.description)}</td>
           <td>${entry.author || ''}</td>
           <td>
@@ -590,7 +630,7 @@
         if (entry) {
           editDocIdInput.value = id;
           versionSelect.value = entry.version || '';
-          categorySelect.value = entry.type || 'feature';
+          categorySelect.value = entry.type || '';
           authorSelect.value = entry.author || '';
           descriptionInput.value = entry.description || '';
 
