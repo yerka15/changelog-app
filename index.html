@@ -68,7 +68,14 @@
       font-size: 0.9rem;
     }
 
-    textarea { resize: vertical; height: 110px; }
+    /* 🎯 Fix: Uniform and graceful word wrapping in Textarea */
+    textarea {
+      resize: vertical;
+      height: 110px;
+      word-break: break-word;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
 
     .actions {
       display: flex;
@@ -215,7 +222,7 @@
     }
     .pill button:hover { color: #ef4444; background: none; }
 
-    /* 🖥️ DESKTOP-ONLY TABLE STYLES (Strictly isolated from mobile) */
+    /* 🖥️ DESKTOP TABLE STYLES */
     @media (min-width: 769px) {
       th:nth-child(1), td:nth-child(1) { width: 110px; white-space: nowrap; }
       th:nth-child(2), td:nth-child(2) { width: 120px; word-break: break-word; }
@@ -225,7 +232,7 @@
       th:nth-child(6), td:nth-child(6) { width: 140px; white-space: nowrap; }
     }
 
-    /* 📱 MOBILE CARDS (Strictly forces text wrapping inside cards) */
+    /* 📱 MOBILE CARDS */
     @media (max-width: 768px) {
       body { padding: 0.5rem; }
       .container { padding: 0; }
@@ -422,10 +429,18 @@
   let listOptions = { versions: ["v1.0.0", "v1.1.0"], developers: ["Alex", "Maria"] };
   let entriesStore = new Map();
 
-  // Bullet Point Logic
+  // 🎯 Auto Bullet Point & Self-Healing Logic
   descriptionInput.addEventListener('focus', () => {
     if (!descriptionInput.value.trim()) {
       descriptionInput.value = '• ';
+    }
+  });
+
+  // Automatically recovers the initial bullet if user deletes it
+  descriptionInput.addEventListener('input', () => {
+    if (!descriptionInput.value.startsWith('• ')) {
+      const cleanText = descriptionInput.value.replace(/^[•\s]*/, '');
+      descriptionInput.value = '• ' + cleanText;
     }
   });
 
